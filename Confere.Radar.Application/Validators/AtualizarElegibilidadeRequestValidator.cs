@@ -13,7 +13,7 @@ namespace Confere.Radar.Application.Validators
             RuleFor(x => x.Status)
                 .NotEmpty().WithMessage("Informe o novo status.")
                 .Must(status => StatusPermitidos.Contains(status.Trim().ToUpperInvariant()))
-                .When(x => !string.IsNullOrWhiteSpace(x.Status))
+                .When(x => !string.IsNullOrWhiteSpace(x.Status), ApplyConditionTo.CurrentValidator)
                 .WithMessage("Use SOLICITADO quando fizer o pedido ou CONCEDIDO quando receber o benefício.");
         }
     }

@@ -11,7 +11,7 @@ namespace Confere.Radar.Application.Validators
             RuleFor(x => x.Tipo)
                 .NotEmpty().WithMessage("Informe o tipo do identificador.")
                 .Must(tipo => TipoIdentificador.Todos.Contains(tipo.Trim().ToUpperInvariant()))
-                .When(x => !string.IsNullOrWhiteSpace(x.Tipo))
+                .When(x => !string.IsNullOrWhiteSpace(x.Tipo), ApplyConditionTo.CurrentValidator)
                 .WithMessage($"Tipo inválido. Use um destes: {string.Join(", ", TipoIdentificador.Todos)}.");
 
             RuleFor(x => x.Valor)

@@ -22,7 +22,7 @@ namespace Confere.Radar.Application.Validators
             RuleFor(x => x.Nivel)
                 .NotEmpty().WithMessage("Informe o nível do alerta.")
                 .Must(nivel => NivelAlerta.Todos.Contains(nivel.Trim().ToUpperInvariant()))
-                .When(x => !string.IsNullOrWhiteSpace(x.Nivel))
+                .When(x => !string.IsNullOrWhiteSpace(x.Nivel), ApplyConditionTo.CurrentValidator)
                 .WithMessage($"Nível inválido. Use um destes: {string.Join(", ", NivelAlerta.Todos)}.");
 
             RuleFor(x => x.DtFim)

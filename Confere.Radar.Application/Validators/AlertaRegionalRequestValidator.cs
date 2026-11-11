@@ -25,12 +25,12 @@ namespace Confere.Radar.Application.Validators
             RuleFor(x => x.Nivel)
                 .NotEmpty().WithMessage("Informe o nível do alerta.")
                 .Must(nivel => NivelAlerta.Todos.Contains(nivel.Trim().ToUpperInvariant()))
-                .When(x => !string.IsNullOrWhiteSpace(x.Nivel))
+                .When(x => !string.IsNullOrWhiteSpace(x.Nivel), ApplyConditionTo.CurrentValidator)
                 .WithMessage($"Nível inválido. Use um destes: {string.Join(", ", NivelAlerta.Todos)}.");
 
             RuleFor(x => x.DtFim)
                 .NotEmpty().WithMessage("Informe a data de fim do alerta.")
-                .GreaterThan(x => x.DtInicio!.Value).When(x => x.DtInicio.HasValue)
+                .GreaterThan(x => x.DtInicio!.Value).When(x => x.DtInicio.HasValue, ApplyConditionTo.CurrentValidator)
                 .WithMessage("A data de fim precisa ser depois da data de início.");
         }
     }
