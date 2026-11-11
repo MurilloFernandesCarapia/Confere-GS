@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="Confere.Radar.Api/Confere.Radar.Api.csproj" />
+  <Project Path="Confere.Radar.Application/Confere.Radar.Application.csproj" />
+  <Project Path="Confere.Radar.Domain/Confere.Radar.Domain.csproj" />
+  <Project Path="Confere.Radar.Infrastructure/Confere.Radar.Infrastructure.csproj" />
+  <Project Path="Confere.Radar.IntegrationTests/Confere.Radar.IntegrationTests.csproj" />
+  <Project Path="Confere.Radar.UnitTests/Confere.Radar.UnitTests.csproj" />
+</Solution>
