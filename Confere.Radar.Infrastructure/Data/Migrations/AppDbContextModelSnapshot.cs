@@ -244,9 +244,9 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ID_TIPO_GOLPE");
 
-                    b.Property<int>("IdUsuarioExterno")
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("int")
-                        .HasColumnName("ID_USUARIO_EXTERNO");
+                        .HasColumnName("ID_USUARIO");
 
                     b.Property<int?>("IdVerificacaoExterna")
                         .HasColumnType("int")
@@ -260,7 +260,7 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
 
                     b.HasIndex("IdMunicipio", "DtDenuncia");
 
-                    b.HasIndex("IdUsuarioExterno", "IdIdentificador", "DtDenuncia");
+                    b.HasIndex("IdUsuario", "IdIdentificador", "DtDenuncia");
 
                     b.ToTable("CF_DENUNCIA", (string)null);
                 });
@@ -286,9 +286,9 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ID_BENEFICIO");
 
-                    b.Property<int>("IdUsuarioExterno")
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("int")
-                        .HasColumnName("ID_USUARIO_EXTERNO");
+                        .HasColumnName("ID_USUARIO");
 
                     b.Property<string>("Motivo")
                         .HasMaxLength(300)
@@ -311,7 +311,7 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
 
                     b.HasIndex("IdBeneficio");
 
-                    b.HasIndex("IdUsuarioExterno", "IdBeneficio")
+                    b.HasIndex("IdUsuario", "IdBeneficio")
                         .IsUnique();
 
                     b.ToTable("CF_ELEGIBILIDADE", null, t =>
@@ -793,9 +793,9 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Confere.Radar.Domain.Entities.PerfilSocial", b =>
                 {
-                    b.Property<int>("IdUsuarioExterno")
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("int")
-                        .HasColumnName("ID_USUARIO_EXTERNO");
+                        .HasColumnName("ID_USUARIO");
 
                     b.Property<bool?>("Deficiencia")
                         .HasColumnType("bit")
@@ -838,7 +838,7 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("VINCULO_FORMAL");
 
-                    b.HasKey("IdUsuarioExterno");
+                    b.HasKey("IdUsuario");
 
                     b.HasIndex("IdMunicipio");
 
@@ -879,9 +879,9 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(64)")
                         .HasColumnName("HASH_REQUISICAO");
 
-                    b.Property<int>("IdUsuarioExterno")
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("int")
-                        .HasColumnName("ID_USUARIO_EXTERNO");
+                        .HasColumnName("ID_USUARIO");
 
                     b.Property<string>("Situacao")
                         .IsRequired()
@@ -1179,6 +1179,82 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Confere.Radar.Domain.Entities.Usuario", b =>
+                {
+                    b.Property<int>("IdUsuario")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID_USUARIO");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit")
+                        .HasColumnName("ATIVO");
+
+                    b.Property<DateTime>("DtCadastro")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DT_CADASTRO");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("EMAIL");
+
+                    b.Property<int?>("IdMunicipio")
+                        .HasColumnType("int")
+                        .HasColumnName("ID_MUNICIPIO");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)")
+                        .HasColumnName("NOME");
+
+                    b.Property<string>("Origem")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("ORIGEM");
+
+                    b.Property<string>("SenhaHash")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("SENHA_HASH");
+
+                    b.Property<string>("Telefone")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("TELEFONE");
+
+                    b.HasKey("IdUsuario");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("IdMunicipio");
+
+                    b.ToTable("CF_USUARIO", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_USUARIO_ORIGEM", "[ORIGEM] IN ('RADAR','JAVA')");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            IdUsuario = 1,
+                            Ativo = true,
+                            DtCadastro = new DateTime(2026, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "cida@confere.app",
+                            IdMunicipio = 1,
+                            Nome = "Maria Aparecida",
+                            Origem = "RADAR",
+                            SenhaHash = "$2a$11$lckz4ODK.px//fnKXwwHuuE0ddFgWQH09d6bTCdx23To3ppoHePAy",
+                            Telefone = "11987654321"
+                        });
+                });
+
             modelBuilder.Entity("Confere.Radar.Domain.Entities.AlertaRegional", b =>
                 {
                     b.HasOne("Confere.Radar.Domain.Entities.Gestor", "Gestor")
@@ -1225,11 +1301,19 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Confere.Radar.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Identificador");
 
                     b.Navigation("Municipio");
 
                     b.Navigation("TipoGolpe");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Confere.Radar.Domain.Entities.Elegibilidade", b =>
@@ -1240,7 +1324,15 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Confere.Radar.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Beneficio");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Confere.Radar.Domain.Entities.Gestor", b =>
@@ -1283,7 +1375,15 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         .HasForeignKey("IdMunicipio")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Confere.Radar.Domain.Entities.Usuario", "Usuario")
+                        .WithOne()
+                        .HasForeignKey("Confere.Radar.Domain.Entities.PerfilSocial", "IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Municipio");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Confere.Radar.Domain.Entities.RequisitoBeneficio", b =>
@@ -1295,6 +1395,16 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Beneficio");
+                });
+
+            modelBuilder.Entity("Confere.Radar.Domain.Entities.Usuario", b =>
+                {
+                    b.HasOne("Confere.Radar.Domain.Entities.Municipio", "Municipio")
+                        .WithMany()
+                        .HasForeignKey("IdMunicipio")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Municipio");
                 });
 
             modelBuilder.Entity("Confere.Radar.Domain.Entities.Beneficio", b =>

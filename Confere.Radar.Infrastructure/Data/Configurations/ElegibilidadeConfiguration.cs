@@ -20,7 +20,12 @@ namespace Confere.Radar.Infrastructure.Data.Configurations
             builder.Property(e => e.Motivo).HasMaxLength(300);
             builder.Property(e => e.Origem).HasMaxLength(15).IsRequired();
 
-            builder.HasIndex(e => new { e.IdUsuarioExterno, e.IdBeneficio }).IsUnique();
+            builder.HasIndex(e => new { e.IdUsuario, e.IdBeneficio }).IsUnique();
+
+            builder.HasOne(e => e.Usuario)
+                .WithMany()
+                .HasForeignKey(e => e.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(e => e.Beneficio)
                 .WithMany()

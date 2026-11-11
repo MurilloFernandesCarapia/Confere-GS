@@ -3,7 +3,7 @@ namespace Confere.Radar.Domain.Entities
     public class RegistroIdempotencia
     {
         public string Chave { get; set; } = string.Empty;
-        public int IdUsuarioExterno { get; set; }
+        public int IdUsuario { get; set; }
         public string Endpoint { get; set; } = string.Empty;
         public string HashRequisicao { get; set; } = string.Empty;
         public string Situacao { get; set; } = string.Empty;

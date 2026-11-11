@@ -18,7 +18,7 @@ namespace Confere.Radar.Infrastructure.Repositories
         {
             return await _context.PerfisSociais
                 .Include(p => p.Municipio)
-                .FirstOrDefaultAsync(p => p.IdUsuarioExterno == idUsuario);
+                .FirstOrDefaultAsync(p => p.IdUsuario == idUsuario);
         }
 
         public async Task AdicionarAsync(PerfilSocial perfil)

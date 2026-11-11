@@ -68,6 +68,22 @@ namespace Confere.Radar.Infrastructure.Data.Seed
             }
         };
 
+        public static readonly Usuario[] Usuarios =
+        {
+            new Usuario
+            {
+                IdUsuario = 1,
+                Nome = "Maria Aparecida",
+                Email = "cida@confere.app",
+                SenhaHash = "$2a$11$lckz4ODK.px//fnKXwwHuuE0ddFgWQH09d6bTCdx23To3ppoHePAy",
+                Telefone = "11987654321",
+                IdMunicipio = 1,
+                Origem = OrigemUsuario.Radar,
+                Ativo = true,
+                DtCadastro = DataCarga
+            }
+        };
+
         public static readonly Beneficio[] Beneficios =
         {
             new Beneficio

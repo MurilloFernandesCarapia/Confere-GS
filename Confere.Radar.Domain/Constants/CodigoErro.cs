@@ -12,5 +12,6 @@ namespace Confere.Radar.Domain.Constants
         public const string IdempotenciaCorpoDiferente = "IDEMPOTENCIA_CORPO_DIFERENTE";
         public const string LimiteExcedido = "LIMITE_EXCEDIDO";
         public const string ServicoIaIndisponivel = "SERVICO_IA_INDISPONIVEL";
+        public const string ErroInterno = "ERRO_INTERNO";
     }
 }

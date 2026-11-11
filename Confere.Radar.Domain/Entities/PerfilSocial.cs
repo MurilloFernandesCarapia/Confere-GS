@@ -2,7 +2,7 @@ namespace Confere.Radar.Domain.Entities
 {
     public class PerfilSocial
     {
-        public int IdUsuarioExterno { get; set; }
+        public int IdUsuario { get; set; }
         public int? Idade { get; set; }
         public string? RendaPcFaixa { get; set; }
         public int? QtdMoradores { get; set; }
@@ -14,6 +14,7 @@ namespace Confere.Radar.Domain.Entities
         public DateTime DtConsentimento { get; set; }
         public DateTime DtAtualizacao { get; set; }
 
+        public Usuario? Usuario { get; set; }
         public Municipio? Municipio { get; set; }
     }
 }

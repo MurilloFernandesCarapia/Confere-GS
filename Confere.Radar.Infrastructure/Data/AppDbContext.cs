@@ -12,6 +12,7 @@ namespace Confere.Radar.Infrastructure.Data
 
         public DbSet<Municipio> Municipios => Set<Municipio>();
         public DbSet<TipoGolpe> TiposGolpe => Set<TipoGolpe>();
+        public DbSet<Usuario> Usuarios => Set<Usuario>();
         public DbSet<OrgaoParceiro> OrgaosParceiros => Set<OrgaoParceiro>();
         public DbSet<Gestor> Gestores => Set<Gestor>();
         public DbSet<IdentificadorSuspeito> Identificadores => Set<IdentificadorSuspeito>();

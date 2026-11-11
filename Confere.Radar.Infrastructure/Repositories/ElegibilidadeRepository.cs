@@ -19,7 +19,7 @@ namespace Confere.Radar.Infrastructure.Repositories
         {
             return await _context.Elegibilidades
                 .Include(e => e.Beneficio)
-                .Where(e => e.IdUsuarioExterno == idUsuario)
+                .Where(e => e.IdUsuario == idUsuario)
                 .OrderBy(e => e.Beneficio!.Nome)
                 .ToListAsync();
         }
@@ -39,7 +39,7 @@ namespace Confere.Radar.Infrastructure.Repositories
         public async Task<int> ContarDestravadosAsync(int idMunicipio, DateTime de, DateTime ate)
         {
             return await (from elegibilidade in _context.Elegibilidades
-                          join perfil in _context.PerfisSociais on elegibilidade.IdUsuarioExterno equals perfil.IdUsuarioExterno
+                          join perfil in _context.PerfisSociais on elegibilidade.IdUsuario equals perfil.IdUsuario
                           where perfil.IdMunicipio == idMunicipio &&
                                 (elegibilidade.Status == StatusElegibilidade.Solicitado || elegibilidade.Status == StatusElegibilidade.Concedido) &&
                                 elegibilidade.DtAtualizacao >= de &&

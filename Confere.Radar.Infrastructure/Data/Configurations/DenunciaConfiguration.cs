@@ -14,7 +14,12 @@ namespace Confere.Radar.Infrastructure.Data.Configurations
             builder.Property(d => d.Descricao).HasMaxLength(500);
 
             builder.HasIndex(d => new { d.IdMunicipio, d.DtDenuncia });
-            builder.HasIndex(d => new { d.IdUsuarioExterno, d.IdIdentificador, d.DtDenuncia });
+            builder.HasIndex(d => new { d.IdUsuario, d.IdIdentificador, d.DtDenuncia });
+
+            builder.HasOne(d => d.Usuario)
+                .WithMany()
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(d => d.Identificador)
                 .WithMany(i => i.Denuncias)

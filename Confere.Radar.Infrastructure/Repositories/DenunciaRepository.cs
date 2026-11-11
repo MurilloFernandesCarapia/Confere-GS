@@ -34,7 +34,7 @@ namespace Confere.Radar.Infrastructure.Repositories
                 .Include(d => d.Identificador)
                 .Include(d => d.TipoGolpe)
                 .Include(d => d.Municipio)
-                .Where(d => d.IdUsuarioExterno == idUsuario)
+                .Where(d => d.IdUsuario == idUsuario)
                 .OrderByDescending(d => d.DtDenuncia)
                 .PaginarAsync(paginacao);
         }
@@ -42,7 +42,7 @@ namespace Confere.Radar.Infrastructure.Repositories
         public async Task<bool> ExisteDoUsuarioDesdeAsync(int idUsuario, int idIdentificador, DateTime desde)
         {
             return await _context.Denuncias.AnyAsync(d =>
-                d.IdUsuarioExterno == idUsuario &&
+                d.IdUsuario == idUsuario &&
                 d.IdIdentificador == idIdentificador &&
                 d.DtDenuncia >= desde);
         }

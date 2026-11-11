@@ -37,7 +37,7 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                 columns: table => new
                 {
                     CHAVE = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    ID_USUARIO_EXTERNO = table.Column<int>(type: "int", nullable: false),
+                    ID_USUARIO = table.Column<int>(type: "int", nullable: false),
                     ENDPOINT = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
                     HASH_REQUISICAO = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     SITUACAO = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
@@ -106,33 +106,6 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("PK_CF_TIPO_GOLPE", x => x.ID_TIPO_GOLPE);
                     table.CheckConstraint("CK_TIPO_GOLPE_GRAVIDADE", "[GRAVIDADE] BETWEEN 1 AND 5");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CF_ELEGIBILIDADE",
-                columns: table => new
-                {
-                    ID_ELEGIBILIDADE = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ID_USUARIO_EXTERNO = table.Column<int>(type: "int", nullable: false),
-                    ID_BENEFICIO = table.Column<int>(type: "int", nullable: false),
-                    STATUS = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
-                    MOTIVO = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    ORIGEM = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    DT_AVALIACAO = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DT_ATUALIZACAO = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CF_ELEGIBILIDADE", x => x.ID_ELEGIBILIDADE);
-                    table.CheckConstraint("CK_ELEGIBILIDADE_ORIGEM", "[ORIGEM] IN ('QUESTIONARIO','DOCUMENTO_IA')");
-                    table.CheckConstraint("CK_ELEGIBILIDADE_STATUS", "[STATUS] IN ('PROVAVEL','POSSIVEL','INELEGIVEL','SOLICITADO','CONCEDIDO')");
-                    table.ForeignKey(
-                        name: "FK_CF_ELEGIBILIDADE_CF_BENEFICIO_ID_BENEFICIO",
-                        column: x => x.ID_BENEFICIO,
-                        principalTable: "CF_BENEFICIO",
-                        principalColumn: "ID_BENEFICIO",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -207,30 +180,54 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CF_PERFIL_SOCIAL",
+                name: "CF_USUARIO",
                 columns: table => new
                 {
-                    ID_USUARIO_EXTERNO = table.Column<int>(type: "int", nullable: false),
-                    IDADE = table.Column<int>(type: "int", nullable: true),
-                    RENDA_PC_FAIXA = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
-                    QTD_MORADORES = table.Column<int>(type: "int", nullable: true),
-                    INSCRITO_CADUNICO = table.Column<bool>(type: "bit", nullable: true),
-                    RECEBE_BPC = table.Column<bool>(type: "bit", nullable: true),
-                    DEFICIENCIA = table.Column<bool>(type: "bit", nullable: true),
-                    VINCULO_FORMAL = table.Column<bool>(type: "bit", nullable: true),
+                    ID_USUARIO = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NOME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    EMAIL = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    SENHA_HASH = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    TELEFONE = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     ID_MUNICIPIO = table.Column<int>(type: "int", nullable: true),
-                    DT_CONSENTIMENTO = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DT_ATUALIZACAO = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ORIGEM = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    ATIVO = table.Column<bool>(type: "bit", nullable: false),
+                    DT_CADASTRO = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CF_PERFIL_SOCIAL", x => x.ID_USUARIO_EXTERNO);
-                    table.CheckConstraint("CK_PERFIL_RENDA", "[RENDA_PC_FAIXA] IS NULL OR [RENDA_PC_FAIXA] IN ('ATE_1_4','ATE_1_2','ATE_1','ATE_2','ACIMA_2')");
+                    table.PrimaryKey("PK_CF_USUARIO", x => x.ID_USUARIO);
+                    table.CheckConstraint("CK_USUARIO_ORIGEM", "[ORIGEM] IN ('RADAR','JAVA')");
                     table.ForeignKey(
-                        name: "FK_CF_PERFIL_SOCIAL_CF_MUNICIPIO_ID_MUNICIPIO",
+                        name: "FK_CF_USUARIO_CF_MUNICIPIO_ID_MUNICIPIO",
                         column: x => x.ID_MUNICIPIO,
                         principalTable: "CF_MUNICIPIO",
                         principalColumn: "ID_MUNICIPIO",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CF_GESTOR",
+                columns: table => new
+                {
+                    ID_GESTOR = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ID_ORGAO = table.Column<int>(type: "int", nullable: false),
+                    NOME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    CARGO = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
+                    EMAIL = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    SENHA_HASH = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ATIVO = table.Column<bool>(type: "bit", nullable: false),
+                    DT_CADASTRO = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CF_GESTOR", x => x.ID_GESTOR);
+                    table.ForeignKey(
+                        name: "FK_CF_GESTOR_CF_ORGAO_PARCEIRO_ID_ORGAO",
+                        column: x => x.ID_ORGAO,
+                        principalTable: "CF_ORGAO_PARCEIRO",
+                        principalColumn: "ID_ORGAO",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -240,7 +237,7 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                 {
                     ID_DENUNCIA = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ID_USUARIO_EXTERNO = table.Column<int>(type: "int", nullable: false),
+                    ID_USUARIO = table.Column<int>(type: "int", nullable: false),
                     ID_IDENTIFICADOR = table.Column<int>(type: "int", nullable: false),
                     ID_TIPO_GOLPE = table.Column<int>(type: "int", nullable: false),
                     ID_MUNICIPIO = table.Column<int>(type: "int", nullable: false),
@@ -270,30 +267,78 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                         principalTable: "CF_TIPO_GOLPE",
                         principalColumn: "ID_TIPO_GOLPE",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CF_DENUNCIA_CF_USUARIO_ID_USUARIO",
+                        column: x => x.ID_USUARIO,
+                        principalTable: "CF_USUARIO",
+                        principalColumn: "ID_USUARIO",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CF_GESTOR",
+                name: "CF_ELEGIBILIDADE",
                 columns: table => new
                 {
-                    ID_GESTOR = table.Column<int>(type: "int", nullable: false)
+                    ID_ELEGIBILIDADE = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ID_ORGAO = table.Column<int>(type: "int", nullable: false),
-                    NOME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
-                    CARGO = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
-                    EMAIL = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    SENHA_HASH = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ATIVO = table.Column<bool>(type: "bit", nullable: false),
-                    DT_CADASTRO = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ID_USUARIO = table.Column<int>(type: "int", nullable: false),
+                    ID_BENEFICIO = table.Column<int>(type: "int", nullable: false),
+                    STATUS = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
+                    MOTIVO = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    ORIGEM = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    DT_AVALIACAO = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DT_ATUALIZACAO = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CF_GESTOR", x => x.ID_GESTOR);
+                    table.PrimaryKey("PK_CF_ELEGIBILIDADE", x => x.ID_ELEGIBILIDADE);
+                    table.CheckConstraint("CK_ELEGIBILIDADE_ORIGEM", "[ORIGEM] IN ('QUESTIONARIO','DOCUMENTO_IA')");
+                    table.CheckConstraint("CK_ELEGIBILIDADE_STATUS", "[STATUS] IN ('PROVAVEL','POSSIVEL','INELEGIVEL','SOLICITADO','CONCEDIDO')");
                     table.ForeignKey(
-                        name: "FK_CF_GESTOR_CF_ORGAO_PARCEIRO_ID_ORGAO",
-                        column: x => x.ID_ORGAO,
-                        principalTable: "CF_ORGAO_PARCEIRO",
-                        principalColumn: "ID_ORGAO",
+                        name: "FK_CF_ELEGIBILIDADE_CF_BENEFICIO_ID_BENEFICIO",
+                        column: x => x.ID_BENEFICIO,
+                        principalTable: "CF_BENEFICIO",
+                        principalColumn: "ID_BENEFICIO",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CF_ELEGIBILIDADE_CF_USUARIO_ID_USUARIO",
+                        column: x => x.ID_USUARIO,
+                        principalTable: "CF_USUARIO",
+                        principalColumn: "ID_USUARIO",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CF_PERFIL_SOCIAL",
+                columns: table => new
+                {
+                    ID_USUARIO = table.Column<int>(type: "int", nullable: false),
+                    IDADE = table.Column<int>(type: "int", nullable: true),
+                    RENDA_PC_FAIXA = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    QTD_MORADORES = table.Column<int>(type: "int", nullable: true),
+                    INSCRITO_CADUNICO = table.Column<bool>(type: "bit", nullable: true),
+                    RECEBE_BPC = table.Column<bool>(type: "bit", nullable: true),
+                    DEFICIENCIA = table.Column<bool>(type: "bit", nullable: true),
+                    VINCULO_FORMAL = table.Column<bool>(type: "bit", nullable: true),
+                    ID_MUNICIPIO = table.Column<int>(type: "int", nullable: true),
+                    DT_CONSENTIMENTO = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DT_ATUALIZACAO = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CF_PERFIL_SOCIAL", x => x.ID_USUARIO);
+                    table.CheckConstraint("CK_PERFIL_RENDA", "[RENDA_PC_FAIXA] IS NULL OR [RENDA_PC_FAIXA] IN ('ATE_1_4','ATE_1_2','ATE_1','ATE_2','ACIMA_2')");
+                    table.ForeignKey(
+                        name: "FK_CF_PERFIL_SOCIAL_CF_MUNICIPIO_ID_MUNICIPIO",
+                        column: x => x.ID_MUNICIPIO,
+                        principalTable: "CF_MUNICIPIO",
+                        principalColumn: "ID_MUNICIPIO",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CF_PERFIL_SOCIAL_CF_USUARIO_ID_USUARIO",
+                        column: x => x.ID_USUARIO,
+                        principalTable: "CF_USUARIO",
+                        principalColumn: "ID_USUARIO",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -434,6 +479,11 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "CF_USUARIO",
+                columns: new[] { "ID_USUARIO", "ATIVO", "DT_CADASTRO", "EMAIL", "ID_MUNICIPIO", "NOME", "ORIGEM", "SENHA_HASH", "TELEFONE" },
+                values: new object[] { 1, true, new DateTime(2026, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc), "cida@confere.app", 1, "Maria Aparecida", "RADAR", "$2a$11$lckz4ODK.px//fnKXwwHuuE0ddFgWQH09d6bTCdx23To3ppoHePAy", "11987654321" });
+
+            migrationBuilder.InsertData(
                 table: "CF_GESTOR",
                 columns: new[] { "ID_GESTOR", "ATIVO", "CARGO", "DT_CADASTRO", "EMAIL", "ID_ORGAO", "NOME", "SENHA_HASH" },
                 values: new object[] { 1, true, "Coordenador", new DateTime(2026, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc), "gestor@cras.sp.gov.br", 1, "Gestor de Teste CRAS", "$2a$11$lckz4ODK.px//fnKXwwHuuE0ddFgWQH09d6bTCdx23To3ppoHePAy" });
@@ -475,9 +525,9 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                 column: "ID_TIPO_GOLPE");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CF_DENUNCIA_ID_USUARIO_EXTERNO_ID_IDENTIFICADOR_DT_DENUNCIA",
+                name: "IX_CF_DENUNCIA_ID_USUARIO_ID_IDENTIFICADOR_DT_DENUNCIA",
                 table: "CF_DENUNCIA",
-                columns: new[] { "ID_USUARIO_EXTERNO", "ID_IDENTIFICADOR", "DT_DENUNCIA" });
+                columns: new[] { "ID_USUARIO", "ID_IDENTIFICADOR", "DT_DENUNCIA" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CF_ELEGIBILIDADE_ID_BENEFICIO",
@@ -485,9 +535,9 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                 column: "ID_BENEFICIO");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CF_ELEGIBILIDADE_ID_USUARIO_EXTERNO_ID_BENEFICIO",
+                name: "IX_CF_ELEGIBILIDADE_ID_USUARIO_ID_BENEFICIO",
                 table: "CF_ELEGIBILIDADE",
-                columns: new[] { "ID_USUARIO_EXTERNO", "ID_BENEFICIO" },
+                columns: new[] { "ID_USUARIO", "ID_BENEFICIO" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -544,6 +594,17 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
                 table: "CF_TIPO_GOLPE",
                 column: "CODIGO",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CF_USUARIO_EMAIL",
+                table: "CF_USUARIO",
+                column: "EMAIL",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CF_USUARIO_ID_MUNICIPIO",
+                table: "CF_USUARIO",
+                column: "ID_MUNICIPIO");
         }
 
         /// <inheritdoc />
@@ -578,6 +639,9 @@ namespace Confere.Radar.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "CF_TIPO_GOLPE");
+
+            migrationBuilder.DropTable(
+                name: "CF_USUARIO");
 
             migrationBuilder.DropTable(
                 name: "CF_BENEFICIO");
