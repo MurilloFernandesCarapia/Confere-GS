@@ -62,6 +62,7 @@ namespace Confere.Radar.Api.Handlers
                 ValidacaoException e => new ErroMapeado(StatusCodes.Status400BadRequest, e.Codigo, "Dados inválidos", e.Message),
                 CredenciaisInvalidasException e => new ErroMapeado(StatusCodes.Status401Unauthorized, e.Codigo, "Não autenticado", e.Message),
                 SemPermissaoException e => new ErroMapeado(StatusCodes.Status403Forbidden, e.Codigo, "Sem permissão", e.Message),
+                ConsentimentoPendenteException e => new ErroMapeado(StatusCodes.Status403Forbidden, e.Codigo, "Consentimento pendente", e.Message),
                 NaoEncontradoException e => new ErroMapeado(StatusCodes.Status404NotFound, e.Codigo, "Não encontrado", e.Message),
                 ConflitoException e => new ErroMapeado(StatusCodes.Status409Conflict, e.Codigo, "Conflito", e.Message),
                 IdempotenciaCorpoDiferenteException e => new ErroMapeado(StatusCodes.Status422UnprocessableEntity, e.Codigo, "Requisição repetida com corpo diferente", e.Message),

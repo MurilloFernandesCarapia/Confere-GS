@@ -7,6 +7,7 @@ namespace Confere.Radar.Domain.Interfaces
         Task<IReadOnlyList<Elegibilidade>> ListarDoUsuarioAsync(int idUsuario);
         Task<Elegibilidade?> ObterPorIdAsync(int id);
         Task AdicionarAsync(Elegibilidade elegibilidade);
+        void Remover(Elegibilidade elegibilidade);
         Task<int> ContarDestravadosAsync(int idMunicipio, DateTime de, DateTime ate);
     }
 }

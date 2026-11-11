@@ -32,6 +32,8 @@ app.MapDenunciaEndpoints();
 app.MapAlertaRegionalEndpoints();
 app.MapGestaoEndpoints();
 app.MapBeneficioEndpoints();
+app.MapPerfilSocialEndpoints();
+app.MapElegibilidadeEndpoints();
 app.MapHealthCheckEndpoints();
 
 app.Run();

@@ -36,6 +36,11 @@ namespace Confere.Radar.Infrastructure.Repositories
             await _context.Elegibilidades.AddAsync(elegibilidade);
         }
 
+        public void Remover(Elegibilidade elegibilidade)
+        {
+            _context.Elegibilidades.Remove(elegibilidade);
+        }
+
         public async Task<int> ContarDestravadosAsync(int idMunicipio, DateTime de, DateTime ate)
         {
             return await (from elegibilidade in _context.Elegibilidades
