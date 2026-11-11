@@ -1,3 +1,4 @@
+using Confere.Radar.Api.RateLimiting;
 using Confere.Radar.Domain.Dtos.Radar;
 using Confere.Radar.Domain.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -13,10 +14,12 @@ namespace Confere.Radar.Api.Endpoints
                 .AllowAnonymous();
 
             grupo.MapGet("/consulta", ConsultarAsync)
+                .RequireRateLimiting(PoliticasLimite.ConsultaPublica)
                 .WithName("ConsultarRadar")
                 .WithSummary("Consulta pública de um número, link, chave Pix, e-mail ou perfil")
-                .WithDescription("Não precisa de login. Mostra só o status, o total de denúncias, o tipo de golpe mais comum e a data da última denúncia. Nunca mostra quem denunciou (RN15). Exemplo: tipo=TELEFONE e valor=11912345678.")
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+                .WithDescription("Não precisa de login. Mostra só o status, o total de denúncias, o tipo de golpe mais comum e a data da última denúncia. Nunca mostra quem denunciou (RN15). Exemplo: tipo=TELEFONE e valor=11912345678. Limite de 20 consultas por minuto por IP (429 com Retry-After).")
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .ProducesProblem(StatusCodes.Status429TooManyRequests);
 
             grupo.MapGet("/tipos-golpe", ListarTiposGolpeAsync)
                 .WithName("ListarTiposGolpe")

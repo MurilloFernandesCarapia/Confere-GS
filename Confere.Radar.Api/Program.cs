@@ -13,6 +13,7 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddProblemDetailsConfere();
 builder.Services.AddJwtConfere();
+builder.Services.AddRateLimitingConfere(builder.Configuration);
 builder.Services.AddSwaggerConfere();
 
 var app = builder.Build();
@@ -24,6 +25,7 @@ app.UseSwaggerConfere();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 app.MapAuthEndpoints(app.Environment);

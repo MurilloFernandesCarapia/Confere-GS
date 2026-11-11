@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Confere.Radar.Api.Extensions;
+using Confere.Radar.Api.RateLimiting;
 using Confere.Radar.Api.Security;
 using Confere.Radar.Domain.Dtos.Radar;
 using Confere.Radar.Domain.Interfaces;
@@ -21,10 +22,12 @@ namespace Confere.Radar.Api.Endpoints
             grupo.MapPost("", CriarAsync)
                 .ComValidacao<DenunciaRequest>()
                 .ComIdempotencia()
+                .RequireRateLimiting(PoliticasLimite.Denuncia)
                 .WithName("CriarDenuncia")
                 .WithSummary("Registra uma denúncia")
-                .WithDescription("Normaliza o identificador e guarda só o hash (RN11), recusa a mesma denúncia do mesmo usuário em 24 h (RN12), recalcula score e status (RN13) e cria alerta regional automático quando o município passa do limite (RN14).")
-                .ProducesProblem(StatusCodes.Status409Conflict);
+                .WithDescription("Normaliza o identificador e guarda só o hash (RN11), recusa a mesma denúncia do mesmo usuário em 24 h (RN12), recalcula score e status (RN13) e cria alerta regional automático quando o município passa do limite (RN14). Cada cidadão pode enviar até 5 denúncias por minuto (429 com Retry-After).")
+                .ProducesProblem(StatusCodes.Status409Conflict)
+                .ProducesProblem(StatusCodes.Status429TooManyRequests);
 
             grupo.MapGet("/minhas", ListarMinhasAsync)
                 .WithName("ListarMinhasDenuncias")
