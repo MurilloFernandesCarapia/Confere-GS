@@ -15,7 +15,8 @@ namespace Confere.Radar.Api.Extensions
                     Title = "Confere Radar API",
                     Version = "v1",
                     Description = "API .NET do Confere (Global Solution FIAP 2026 - CitizenTech): radar comunitário de golpes, Meus direitos e painel do gestor público. " +
-                                  "Gestores fazem login em POST /auth/token. Cidadãos usam o token emitido pela API Java. Clique em Authorize e cole só o token, sem a palavra Bearer."
+                                  "Cidadãos fazem login em POST /auth/login (ou usam o token da API Java) e gestores em POST /auth/token. Clique em Authorize e cole só o token, sem a palavra Bearer. " +
+                                  "POST /denuncias e POST /elegibilidades/avaliar exigem o header Idempotency-Key com um UUID."
                 });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -26,6 +27,8 @@ namespace Confere.Radar.Api.Extensions
                     In = ParameterLocation.Header,
                     Description = "Cole aqui apenas o token JWT, sem a palavra Bearer."
                 });
+
+                c.OperationFilter<IdempotenciaOperationFilter>();
 
                 c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                 {

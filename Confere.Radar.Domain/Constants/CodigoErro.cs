@@ -11,6 +11,7 @@ namespace Confere.Radar.Domain.Constants
         public const string Conflito = "CONFLITO";
         public const string DenunciaDuplicada = "DENUNCIA_DUPLICADA";
         public const string IdempotenciaCorpoDiferente = "IDEMPOTENCIA_CORPO_DIFERENTE";
+        public const string IdempotenciaEmProcessamento = "IDEMPOTENCIA_EM_PROCESSAMENTO";
         public const string LimiteExcedido = "LIMITE_EXCEDIDO";
         public const string ServicoIaIndisponivel = "SERVICO_IA_INDISPONIVEL";
         public const string ErroInterno = "ERRO_INTERNO";

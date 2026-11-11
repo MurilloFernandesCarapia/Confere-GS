@@ -10,5 +10,19 @@ namespace Confere.Radar.Api.Extensions
                 .AddEndpointFilter<ValidacaoFilter<T>>()
                 .ProducesProblem(StatusCodes.Status400BadRequest);
         }
+
+        public static RouteHandlerBuilder ComIdempotencia(this RouteHandlerBuilder builder)
+        {
+            return builder
+                .AddEndpointFilter<IdempotenciaFilter>()
+                .WithMetadata(new ExigeIdempotencia())
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .ProducesProblem(StatusCodes.Status409Conflict)
+                .ProducesProblem(StatusCodes.Status422UnprocessableEntity);
+        }
+    }
+
+    public sealed class ExigeIdempotencia
+    {
     }
 }

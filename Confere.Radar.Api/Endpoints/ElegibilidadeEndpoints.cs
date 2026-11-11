@@ -18,6 +18,7 @@ namespace Confere.Radar.Api.Endpoints
                 .ProducesProblem(StatusCodes.Status403Forbidden);
 
             grupo.MapPost("/avaliar", AvaliarAsync)
+                .ComIdempotencia()
                 .WithName("AvaliarElegibilidade")
                 .WithSummary("Avalia todos os benefícios ativos com base no meu perfil social")
                 .WithDescription("Requisitos do mesmo grupo valem juntos (E) e grupos diferentes são alternativas (OU). Algum grupo atendido dá PROVAVEL, dado faltante ou benefício sem requisito dá POSSIVEL e nenhum grupo atendido dá INELEGIVEL (RN16). O que você marcou como SOLICITADO ou CONCEDIDO não é sobrescrito. Sem perfil social responde 403 CONSENTIMENTO_PENDENTE.");

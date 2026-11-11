@@ -20,6 +20,7 @@ namespace Confere.Radar.Api.Endpoints
 
             grupo.MapPost("", CriarAsync)
                 .ComValidacao<DenunciaRequest>()
+                .ComIdempotencia()
                 .WithName("CriarDenuncia")
                 .WithSummary("Registra uma denúncia")
                 .WithDescription("Normaliza o identificador e guarda só o hash (RN11), recusa a mesma denúncia do mesmo usuário em 24 h (RN12), recalcula score e status (RN13) e cria alerta regional automático quando o município passa do limite (RN14).")

@@ -16,5 +16,10 @@ namespace Confere.Radar.Infrastructure.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public void DescartarAlteracoes()
+        {
+            _context.ChangeTracker.Clear();
+        }
     }
 }

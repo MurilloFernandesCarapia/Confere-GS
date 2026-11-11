@@ -23,6 +23,7 @@ namespace Confere.Radar.Application
             services.AddScoped<IGestaoService, GestaoService>();
             services.AddScoped<IPerfilSocialService, PerfilSocialService>();
             services.AddScoped<IElegibilidadeService, ElegibilidadeService>();
+            services.AddScoped<IIdempotenciaService, IdempotenciaService>();
 
             return services;
         }
