@@ -27,6 +27,10 @@ app.UseAuthorization();
 
 app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 app.MapAuthEndpoints(app.Environment);
+app.MapRadarEndpoints();
+app.MapDenunciaEndpoints();
+app.MapAlertaRegionalEndpoints();
+app.MapGestaoEndpoints();
 app.MapBeneficioEndpoints();
 app.MapHealthCheckEndpoints();
 

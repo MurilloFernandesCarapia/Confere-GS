@@ -12,8 +12,15 @@ namespace Confere.Radar.Application
             services.AddSingleton(TimeProvider.System);
             services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
+            services.AddSingleton<INormalizadorIdentificador, NormalizadorIdentificador>();
+
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IBeneficioService, BeneficioService>();
+            services.AddScoped<IRadarScoreService, RadarScoreService>();
+            services.AddScoped<IAlertaRegionalService, AlertaRegionalService>();
+            services.AddScoped<IDenunciaService, DenunciaService>();
+            services.AddScoped<IRadarService, RadarService>();
+            services.AddScoped<IGestaoService, GestaoService>();
 
             return services;
         }

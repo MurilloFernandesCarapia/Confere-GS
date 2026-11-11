@@ -36,6 +36,7 @@ namespace Confere.Radar.Api.Extensions
                 StatusCodes.Status401Unauthorized => CodigoErro.NaoAutenticado,
                 StatusCodes.Status403Forbidden => CodigoErro.SemPermissao,
                 StatusCodes.Status404NotFound => CodigoErro.NaoEncontrado,
+                StatusCodes.Status405MethodNotAllowed => CodigoErro.MetodoNaoPermitido,
                 StatusCodes.Status409Conflict => CodigoErro.Conflito,
                 StatusCodes.Status429TooManyRequests => CodigoErro.LimiteExcedido,
                 _ => CodigoErro.ErroInterno

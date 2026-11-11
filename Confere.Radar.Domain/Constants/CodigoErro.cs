@@ -7,6 +7,7 @@ namespace Confere.Radar.Domain.Constants
         public const string SemPermissao = "SEM_PERMISSAO";
         public const string ConsentimentoPendente = "CONSENTIMENTO_PENDENTE";
         public const string NaoEncontrado = "NAO_ENCONTRADO";
+        public const string MetodoNaoPermitido = "METODO_NAO_PERMITIDO";
         public const string Conflito = "CONFLITO";
         public const string DenunciaDuplicada = "DENUNCIA_DUPLICADA";
         public const string IdempotenciaCorpoDiferente = "IDEMPOTENCIA_CORPO_DIFERENTE";
