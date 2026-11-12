@@ -1,0 +1,2743 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Confere Radar API",
+    "description": "API .NET do Confere (Global Solution FIAP 2026 - CitizenTech): radar comunitário de golpes, Meus direitos e painel do gestor público. Cidadãos fazem login em POST /auth/login (ou usam o token da API Java) e gestores em POST /auth/token. Clique em Authorize e cole só o token, sem a palavra Bearer. POST /denuncias e POST /elegibilidades/avaliar exigem o header Idempotency-Key com um UUID.",
+    "version": "v1"
+  },
+  "paths": {
+    "/alertas-regionais": {
+      "get": {
+        "tags": [
+          "Alertas regionais"
+        ],
+        "summary": "Lista os alertas ativos de um município",
+        "description": "Se codIbge não for informado, usa o município que está no token. Alertas vencidos ou encerrados não aparecem.",
+        "operationId": "ListarAlertasRegionais",
+        "parameters": [
+          {
+            "name": "codIbge",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AlertaRegionalResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Alertas regionais"
+        ],
+        "summary": "Cria um alerta regional",
+        "description": "Só o gestor do município pode criar. Se dtInicio não for enviado, o alerta começa agora.",
+        "operationId": "CriarAlertaRegional",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlertaRegionalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertaRegionalResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/alertas-regionais/{id}": {
+      "get": {
+        "tags": [
+          "Alertas regionais"
+        ],
+        "summary": "Detalha um alerta regional",
+        "operationId": "ObterAlertaRegional",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertaRegionalResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Alertas regionais"
+        ],
+        "summary": "Edita um alerta regional",
+        "description": "Também vale para os alertas automáticos (RN14). Alerta encerrado não pode ser editado.",
+        "operationId": "AtualizarAlertaRegional",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarAlertaRegionalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertaRegionalResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Alertas regionais"
+        ],
+        "summary": "Encerra um alerta regional",
+        "description": "O alerta não é apagado do banco, ele só fica inativo para manter o histórico do painel.",
+        "operationId": "EncerrarAlertaRegional",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/registrar": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Cadastro do cidadão",
+        "description": "Cria a conta do cidadão na API .NET. A senha precisa ter 8 caracteres, com letra e número. Se a pessoa já entrou antes com a conta da API Java, o cadastro só define a senha dela aqui.",
+        "operationId": "RegistrarCidadao",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistroCidadaoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioLogadoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Login do cidadão",
+        "description": "Devolve um JWT emitido pela API .NET (iss = confere-radar), válido por 8 horas.",
+        "operationId": "LoginCidadao",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/token": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Login do gestor público",
+        "description": "Autentica um gestor (CRAS, Procon, prefeitura) e devolve um JWT com o papel GESTOR.",
+        "operationId": "LoginGestor",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Dados do cidadão logado",
+        "description": "Funciona com o token emitido por esta API ou pela API Java.",
+        "operationId": "ObterCidadaoLogado",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioLogadoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/dev/token-cidadao-java": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "[Somente desenvolvimento] Simula um token emitido pela API Java",
+        "description": "Serve para demonstrar a integração: o token tem iss = confere-java e, no primeiro uso, a API cria o cidadão aqui pelo e-mail. Não existe fora do ambiente Development.",
+        "operationId": "GerarTokenCidadaoJavaTeste",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenCidadaoTesteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenCidadaoTesteResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gestao/identificadores": {
+      "get": {
+        "tags": [
+          "Gestão pública"
+        ],
+        "summary": "Lista os identificadores denunciados",
+        "description": "Ordenado pelo score. Filtre por status (EM_ANALISE, CONFIRMADO ou DESCARTADO). O valor aparece sempre mascarado.",
+        "operationId": "ListarIdentificadores",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "tamanho",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentificadorGestaoResponsePaginaResultado"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gestao/identificadores/{id}/status": {
+      "patch": {
+        "tags": [
+          "Gestão pública"
+        ],
+        "summary": "Marca um identificador como falso positivo ou reabre a análise",
+        "description": "DESCARTADO não volta a CONFIRMADO sozinho (RN13). EM_ANALISE reabre e recalcula o score na hora.",
+        "operationId": "AtualizarStatusIdentificador",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarStatusIdentificadorRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentificadorGestaoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gestao/painel": {
+      "get": {
+        "tags": [
+          "Gestão pública"
+        ],
+        "summary": "Indicadores do município",
+        "description": "Por padrão mostra o município do órgão do gestor nos últimos 30 dias. Datas no formato 2026-11-01 ou 2026-11-01T00:00:00-03:00.",
+        "operationId": "ObterPainelGestao",
+        "parameters": [
+          {
+            "name": "codIbge",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "de",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "ate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PainelGestaoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/beneficios": {
+      "get": {
+        "tags": [
+          "Meus direitos - Benefícios"
+        ],
+        "summary": "Lista o catálogo de benefícios ativos",
+        "description": "Mostra cada benefício em linguagem simples, com o valor de referência e o link oficial.",
+        "operationId": "ListarBeneficios",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BeneficioResumoResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/beneficios/{codigo}": {
+      "get": {
+        "tags": [
+          "Meus direitos - Benefícios"
+        ],
+        "summary": "Detalha um benefício com requisitos e passo a passo",
+        "description": "Use o código do catálogo, por exemplo TARIFA_SOCIAL ou BPC_IDOSO.",
+        "operationId": "ObterBeneficio",
+        "parameters": [
+          {
+            "name": "codigo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeneficioDetalheResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/elegibilidades/avaliar": {
+      "post": {
+        "tags": [
+          "Meus direitos - Elegibilidade"
+        ],
+        "summary": "Avalia todos os benefícios ativos com base no meu perfil social",
+        "description": "Requisitos do mesmo grupo valem juntos (E) e grupos diferentes são alternativas (OU). Algum grupo atendido dá PROVAVEL, dado faltante ou benefício sem requisito dá POSSIVEL e nenhum grupo atendido dá INELEGIVEL (RN16). O que você marcou como SOLICITADO ou CONCEDIDO não é sobrescrito. Sem perfil social responde 403 CONSENTIMENTO_PENDENTE.",
+        "operationId": "AvaliarElegibilidade",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUID novo para cada operação. Repetir a mesma chave com o mesmo corpo devolve a resposta salva (header Idempotent-Replayed: true); com corpo diferente dá 422. Vale por 24 horas. No PowerShell: [guid]::NewGuid()",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ElegibilidadeResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/elegibilidades": {
+      "get": {
+        "tags": [
+          "Meus direitos - Elegibilidade"
+        ],
+        "summary": "Lista os meus resultados",
+        "operationId": "ListarElegibilidades",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ElegibilidadeResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/elegibilidades/{id}": {
+      "patch": {
+        "tags": [
+          "Meus direitos - Elegibilidade"
+        ],
+        "summary": "Marca um benefício como SOLICITADO ou CONCEDIDO",
+        "operationId": "AtualizarElegibilidade",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarElegibilidadeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ElegibilidadeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/perfil-social": {
+      "get": {
+        "tags": [
+          "Meus direitos - Perfil social"
+        ],
+        "summary": "Mostra o meu perfil social",
+        "operationId": "ObterPerfilSocial",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerfilSocialResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Meus direitos - Perfil social"
+        ],
+        "summary": "Cria ou atualiza o meu perfil social",
+        "description": "Só grava com consentimento: true (RN17). A renda é informada por faixa (ATE_1_4, ATE_1_2, ATE_1, ATE_2, ACIMA_2), nunca o valor exato. Campos em branco significam \"não sei\" e deixam o resultado como POSSIVEL.",
+        "operationId": "SalvarPerfilSocial",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PerfilSocialRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerfilSocialResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Meus direitos - Perfil social"
+        ],
+        "summary": "Apaga o meu perfil social",
+        "description": "Também apaga os resultados calculados a partir dele. Os benefícios que você marcou como SOLICITADO ou CONCEDIDO continuam guardados.",
+        "operationId": "ExcluirPerfilSocial",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/radar/consulta": {
+      "get": {
+        "tags": [
+          "Radar comunitário"
+        ],
+        "summary": "Consulta pública de um número, link, chave Pix, e-mail ou perfil",
+        "description": "Não precisa de login. Mostra só o status, o total de denúncias, o tipo de golpe mais comum e a data da última denúncia. Nunca mostra quem denunciou (RN15). Exemplo: tipo=TELEFONE e valor=11912345678. Limite de 20 consultas por minuto por IP (429 com Retry-After).",
+        "operationId": "ConsultarRadar",
+        "parameters": [
+          {
+            "name": "tipo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "valor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsultaRadarResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/radar/tipos-golpe": {
+      "get": {
+        "tags": [
+          "Radar comunitário"
+        ],
+        "summary": "Lista os tipos de golpe do catálogo",
+        "description": "Use o campo codigo ao registrar uma denúncia ou um alerta regional.",
+        "operationId": "ListarTiposGolpe",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoGolpeResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/denuncias": {
+      "post": {
+        "tags": [
+          "Radar comunitário - Denúncias"
+        ],
+        "summary": "Registra uma denúncia",
+        "description": "Normaliza o identificador e guarda só o hash (RN11), recusa a mesma denúncia do mesmo usuário em 24 h (RN12), recalcula score e status (RN13) e cria alerta regional automático quando o município passa do limite (RN14). Cada cidadão pode enviar até 5 denúncias por minuto (429 com Retry-After).",
+        "operationId": "CriarDenuncia",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUID novo para cada operação. Repetir a mesma chave com o mesmo corpo devolve a resposta salva (header Idempotent-Replayed: true); com corpo diferente dá 422. Vale por 24 horas. No PowerShell: [guid]::NewGuid()",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DenunciaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DenunciaCriadaResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/denuncias/minhas": {
+      "get": {
+        "tags": [
+          "Radar comunitário - Denúncias"
+        ],
+        "summary": "Lista as denúncias do cidadão logado",
+        "description": "Paginado: pagina começa em 0 e tamanho vai até 50.",
+        "operationId": "ListarMinhasDenuncias",
+        "parameters": [
+          {
+            "name": "pagina",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "tamanho",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DenunciaResponsePaginaResultado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/denuncias/{id}": {
+      "get": {
+        "tags": [
+          "Radar comunitário - Denúncias"
+        ],
+        "summary": "Detalha uma denúncia",
+        "description": "Só o dono da denúncia consegue ver.",
+        "operationId": "ObterDenuncia",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DenunciaResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Radar comunitário - Denúncias"
+        ],
+        "summary": "Edita o tipo de golpe e a descrição",
+        "description": "O identificador denunciado não pode ser trocado. Para isso, exclua e crie outra denúncia.",
+        "operationId": "AtualizarDenuncia",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarDenunciaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DenunciaResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Radar comunitário - Denúncias"
+        ],
+        "summary": "Exclui uma denúncia",
+        "description": "Depois de excluir, o total e o score do identificador são recalculados.",
+        "operationId": "ExcluirDenuncia",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AlertaRegionalRequest": {
+        "type": "object",
+        "properties": {
+          "codIbgeMunicipio": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipoGolpeCodigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "titulo": {
+            "type": "string",
+            "nullable": true
+          },
+          "mensagem": {
+            "type": "string",
+            "nullable": true
+          },
+          "nivel": {
+            "type": "string",
+            "nullable": true
+          },
+          "dtInicio": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dtFim": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AlertaRegionalResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "titulo": {
+            "type": "string",
+            "nullable": true
+          },
+          "mensagem": {
+            "type": "string",
+            "nullable": true
+          },
+          "nivel": {
+            "type": "string",
+            "nullable": true
+          },
+          "origem": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipoGolpe": {
+            "$ref": "#/components/schemas/TipoGolpeResumoResponse"
+          },
+          "municipio": {
+            "$ref": "#/components/schemas/MunicipioResponse"
+          },
+          "dtInicio": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dtFim": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ativo": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AtualizarAlertaRegionalRequest": {
+        "type": "object",
+        "properties": {
+          "tipoGolpeCodigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "titulo": {
+            "type": "string",
+            "nullable": true
+          },
+          "mensagem": {
+            "type": "string",
+            "nullable": true
+          },
+          "nivel": {
+            "type": "string",
+            "nullable": true
+          },
+          "dtFim": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AtualizarDenunciaRequest": {
+        "type": "object",
+        "properties": {
+          "tipoGolpeCodigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AtualizarElegibilidadeRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AtualizarStatusIdentificadorRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BeneficioDetalheResponse": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "orgaoResponsavel": {
+            "type": "string",
+            "nullable": true
+          },
+          "descricaoSimples": {
+            "type": "string",
+            "nullable": true
+          },
+          "valorReferencia": {
+            "type": "string",
+            "nullable": true
+          },
+          "linkOficial": {
+            "type": "string",
+            "nullable": true
+          },
+          "requisitos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequisitoBeneficioResponse"
+            },
+            "nullable": true
+          },
+          "passos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PassoBeneficioResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BeneficioElegibilidadeResponse": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "valorReferencia": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BeneficioResumoResponse": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "orgaoResponsavel": {
+            "type": "string",
+            "nullable": true
+          },
+          "descricaoSimples": {
+            "type": "string",
+            "nullable": true
+          },
+          "valorReferencia": {
+            "type": "string",
+            "nullable": true
+          },
+          "linkOficial": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConsultaRadarResponse": {
+        "type": "object",
+        "properties": {
+          "encontrado": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalDenuncias": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipoMaisComum": {
+            "type": "string",
+            "nullable": true
+          },
+          "ultimaDenuncia": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DenunciaCriadaResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "identificador": {
+            "$ref": "#/components/schemas/IdentificadorResponse"
+          },
+          "alertaRegionalCriado": {
+            "type": "boolean"
+          },
+          "criadoEm": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DenunciaRequest": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "nullable": true
+          },
+          "valor": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipoGolpeCodigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "codIbgeMunicipio": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "idVerificacao": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DenunciaResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "identificador": {
+            "$ref": "#/components/schemas/IdentificadorResponse"
+          },
+          "tipoGolpe": {
+            "$ref": "#/components/schemas/TipoGolpeResumoResponse"
+          },
+          "municipio": {
+            "$ref": "#/components/schemas/MunicipioResponse"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "idVerificacao": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "criadoEm": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "atualizadoEm": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DenunciaResponsePaginaResultado": {
+        "type": "object",
+        "properties": {
+          "conteudo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DenunciaResponse"
+            },
+            "nullable": true
+          },
+          "pagina": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tamanho": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalItens": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPaginas": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ElegibilidadeResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "beneficio": {
+            "$ref": "#/components/schemas/BeneficioElegibilidadeResponse"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "motivo": {
+            "type": "string",
+            "nullable": true
+          },
+          "origem": {
+            "type": "string",
+            "nullable": true
+          },
+          "avaliadoEm": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "atualizadoEm": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdentificadorGestaoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipo": {
+            "type": "string",
+            "nullable": true
+          },
+          "valorMascarado": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalDenuncias": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "primeiraDenuncia": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ultimaDenuncia": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdentificadorGestaoResponsePaginaResultado": {
+        "type": "object",
+        "properties": {
+          "conteudo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentificadorGestaoResponse"
+            },
+            "nullable": true
+          },
+          "pagina": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tamanho": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalItens": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPaginas": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdentificadorResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipo": {
+            "type": "string",
+            "nullable": true
+          },
+          "valorMascarado": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalDenuncias": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "senha": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MunicipioResponse": {
+        "type": "object",
+        "properties": {
+          "codIbge": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "uf": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PainelGestaoResponse": {
+        "type": "object",
+        "properties": {
+          "municipio": {
+            "$ref": "#/components/schemas/MunicipioResponse"
+          },
+          "de": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalDenuncias": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "identificadoresConfirmados": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "identificadoresEmAnalise": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "identificadoresDescartados": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "alertasEmitidos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "alertasAtivos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tiposMaisDenunciados": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TotalPorTipoGolpe"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PassoBeneficioResponse": {
+        "type": "object",
+        "properties": {
+          "ordem": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "instrucao": {
+            "type": "string",
+            "nullable": true
+          },
+          "canal": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PerfilSocialRequest": {
+        "type": "object",
+        "properties": {
+          "idade": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rendaPcFaixa": {
+            "type": "string",
+            "nullable": true
+          },
+          "qtdMoradores": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "inscritoCadunico": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "recebeBpc": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "deficiencia": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "vinculoFormal": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "codIbgeMunicipio": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "consentimento": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PerfilSocialResponse": {
+        "type": "object",
+        "properties": {
+          "idade": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rendaPcFaixa": {
+            "type": "string",
+            "nullable": true
+          },
+          "rendaPcFaixaDescricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "qtdMoradores": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "inscritoCadunico": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "recebeBpc": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "deficiencia": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "vinculoFormal": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "municipio": {
+            "$ref": "#/components/schemas/MunicipioResponse"
+          },
+          "consentidoEm": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "atualizadoEm": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "RegistroCidadaoRequest": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "senha": {
+            "type": "string",
+            "nullable": true
+          },
+          "telefone": {
+            "type": "string",
+            "nullable": true
+          },
+          "codIbgeMunicipio": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequisitoBeneficioResponse": {
+        "type": "object",
+        "properties": {
+          "grupo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "criterio": {
+            "type": "string",
+            "nullable": true
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TipoGolpeResponse": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "gravidade": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "orgaoImitado": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TipoGolpeResumoResponse": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenCidadaoTesteRequest": {
+        "type": "object",
+        "properties": {
+          "idUsuario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "codIbgeMunicipio": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenCidadaoTesteResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipo": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiraEm": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "emissor": {
+            "type": "string",
+            "nullable": true
+          },
+          "observacao": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipo": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiraEm": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "usuario": {
+            "$ref": "#/components/schemas/UsuarioLogadoResponse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TotalPorTipoGolpe": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UsuarioLogadoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "perfil": {
+            "type": "string",
+            "nullable": true
+          },
+          "codIbgeMunicipio": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "municipio": {
+            "type": "string",
+            "nullable": true
+          },
+          "orgao": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Cole aqui apenas o token JWT, sem a palavra Bearer.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "Alertas regionais"
+    },
+    {
+      "name": "Autenticação"
+    },
+    {
+      "name": "Gestão pública"
+    },
+    {
+      "name": "Meus direitos - Benefícios"
+    },
+    {
+      "name": "Meus direitos - Elegibilidade"
+    },
+    {
+      "name": "Meus direitos - Perfil social"
+    },
+    {
+      "name": "Radar comunitário"
+    },
+    {
+      "name": "Radar comunitário - Denúncias"
+    }
+  ]
+}

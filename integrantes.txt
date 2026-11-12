@@ -1,0 +1,12 @@
+Global Solution 2026/2 - FIAP - Tema CitizenTech
+Solução: Confere
+Disciplina: Advanced Business Development with .NET
+
+Integrantes (RM - Nome completo - Turma):
+564969 - Murillo Fernandes Carapia - 2TDSPW
+565565 - João Vitor Lacerda - 2TDSPW
+565403 - Kauan Vieira de Lima - 2TDSPW
+564184 - Pedro de Matos Previtali - 2TDSPW
+
+Repositório no GitHub:
+https://github.com/MurilloFernandesCarapia/Confere-GS
